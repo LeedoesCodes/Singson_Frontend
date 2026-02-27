@@ -1,0 +1,112 @@
+/* --- Main Container: Split Screen for PC --- */
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    width: 100%;
+  }
+  
+  /* --- Left Side: Welcome/Branding Area --- */
+  .login-sidebar {
+    flex: 1; /* Takes up exactly 50% of the screen */
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .login-sidebar h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .login-sidebar p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  
+  /* --- Right Side: The Form Area --- */
+  .login-form-wrapper {
+    flex: 1; /* Takes up the other 50% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f2f5;
+  }
+  
+  /* --- The White Card --- */
+  .login-card {
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 8px;
+    border: 1px solid #cccccc;
+    width: 100%;
+    max-width: 450px; /* Slightly wider for PC */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .login-card h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    color: #333333;
+  }
+  
+  .error-message {
+    color: #cc0000;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  /* --- Form Layout --- */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  .input-group input {
+    padding: 0.85rem;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .input-group input:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  /* --- Button --- */
+  .login-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+  
+  .login-btn:hover {
+    background-color: #0056b3;
+  }
