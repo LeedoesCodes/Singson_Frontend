@@ -1,19 +1,40 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
-import Login from './components/Login/Login.jsx';
-import Dashboard from './components/Dashboard/Dashboard.jsx';
+// --- Import UI Components ---
+import Layout from './components/UI/Layout/Layout';
+
+// --- Import Pages ---
+import Dashboard from './components/Pages/Dashboard/Dashboard';
+import Orders from './components/Pages/Orders/Orders';
+import User from './components/Pages/User/User';
+import Settings from './components/Pages/Settings/Settings';
+
+// --- Import Auth ---
+// Assuming you have a basic Login component inside the Login folder
+import Login from './components/Login/Login';
 
 function App() {
   return (
-   <BrowserRouter>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<div className='login-theme'><Login/></div>}/>
-        <Route path="/dashboard" element={<div className="dashboard-theme"><Dashboard/></div>}/>
-        <Route path="*" element={<Navigate to="/"/>}/>
+        
+        
+        <Route path="/login" element={<Login />} />
+
+        
+        <Route element={<Layout />}>
+        
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/user" element={<User />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
+
       </Routes>
-   </BrowserRouter>
-  )
+    </BrowserRouter>
+  );
 }
 
 export default App;

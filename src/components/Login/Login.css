@@ -1,4 +1,4 @@
-/* --- Main Container: Split Screen for PC --- */
+
 .login-container {
     display: flex;
     min-height: 100vh;
@@ -6,9 +6,9 @@
     width: 100%;
   }
   
-  /* --- Left Side: Welcome/Branding Area --- */
+
   .login-sidebar {
-    flex: 1; /* Takes up exactly 50% of the screen */
+    flex: 1;
     background-color: #007bff;
     color: white;
     display: flex;
@@ -29,23 +29,23 @@
     line-height: 1.5;
   }
   
-  /* --- Right Side: The Form Area --- */
+
   .login-form-wrapper {
-    flex: 1; /* Takes up the other 50% */
+    flex: 1; 
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #f0f2f5;
   }
   
-  /* --- The White Card --- */
+
   .login-card {
     background-color: #ffffff;
     padding: 3rem;
     border-radius: 8px;
     border: 1px solid #cccccc;
     width: 100%;
-    max-width: 450px; /* Slightly wider for PC */
+    max-width: 450px; 
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
@@ -63,7 +63,7 @@
     font-size: 0.9rem;
   }
   
-  /* --- Form Layout --- */
+
   .login-form {
     display: flex;
     flex-direction: column;
@@ -94,7 +94,7 @@
     border-color: #007bff;
   }
   
-  /* --- Button --- */
+
   .login-btn {
     background-color: #007bff;
     color: white;
