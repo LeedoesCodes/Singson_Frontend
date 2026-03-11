@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../api/auth";
 import "./Login.scss";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -18,30 +20,39 @@ const Login = () => {
     }
 
     setError("");
+    setLoading(true);
 
-    // Mock authentication
-    if (email === "admin@test.com" && password === "123456") {
-      console.log("Login successful:", { email });
-      // Redirect to dashboard (ensure you have routing set up)
-      navigate("/dashboard");
-    } else {
-      setError("Invalid credentials. Access denied.");
+    try {
+      const result = await loginUser(email, password);
+
+      if (result.ok) {
+        localStorage.setItem("token", result.data.token);
+        localStorage.setItem("user", JSON.stringify(result.data.user));
+
+        console.log("Login successful:", result.data);
+
+        navigate("/dashboard");
+      } else {
+        setError(result.data.message || "Invalid credentials. Access denied.");
+      }
+    } catch (err) {
+      console.error("Login request failed:", err);
+      setError("Unable to connect to the server.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
-      {/* --- Left Side: Branding/Futuristic Visual Area --- */}
       <div className="login-sidebar">
         <div className="visual-content">
-          {/* Subtle graphic element created in CSS */}
           <div className="futuristic-grid"></div>
           <h1>CORE PORTAL</h1>
           <p>Initialize secure session to access your neural workspace.</p>
         </div>
       </div>
 
-      {/* --- Right Side: The Form Area --- */}
       <div className="login-form-wrapper">
         <div className="login-card">
           <h2>Authentication</h2>
@@ -73,8 +84,8 @@ const Login = () => {
               />
             </div>
 
-            <button type="submit" className="login-btn">
-              Execute Login
+            <button type="submit" className="login-btn" disabled={loading}>
+              {loading ? "Logging in..." : "Execute Login"}
             </button>
           </form>
 

@@ -1,0 +1,22 @@
+/* src/components/Pages/Dashboard/Dashboard.css */
+
+/* --- Main Dashboard Container --- */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Creates the vertical space between the stats row and the recent activity panel */
+}
+
+/* --- Stats Grid Layout --- */
+.stats-grid {
+  display: flex;
+  gap: 1.5rem; /* Creates the horizontal space between each individual stat card */
+}
+
+/* --- Optional: Mobile Responsiveness --- */
+/* This ensures the cards stack on top of each other if the screen gets too small */
+@media (max-width: 768px) {
+  .stats-grid {
+    flex-direction: column;
+  }
+}
