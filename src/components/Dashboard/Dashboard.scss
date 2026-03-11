@@ -1,0 +1,320 @@
+/* --- Variables - Futuristic Dark Theme --- */
+$bg-base: #0a0e17;
+$bg-card: rgba(22, 28, 43, 0.7);
+$primary-accent: #00f2fe;
+$primary-hover: #4facfe;
+$text-main: #e0e6ed;
+$text-muted: #94a3b8;
+$error-color: #ff4d4d;
+$border-color: rgba(255, 255, 255, 0.08);
+
+/* --- Basic Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $bg-base;
+  color: $text-main;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- Dashboard Layout --- */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.9) 0%,
+    rgba(2, 6, 23, 0.95) 100%
+  );
+  border-right: 1px solid $border-color;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+
+  .sidebar-header {
+    padding: 2rem 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border-bottom: 1px solid $border-color;
+    color: $text-main;
+
+    .accent {
+      color: $primary-accent;
+    }
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    padding: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    li {
+      padding: 1rem 1.5rem;
+      color: $text-muted;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.03);
+        color: $text-main;
+      }
+
+      &.active {
+        background-color: rgba($primary-accent, 0.1);
+        color: $primary-accent;
+        border-left: 3px solid $primary-accent;
+        box-shadow: inset 5px 0 15px -10px $primary-accent;
+      }
+    }
+  }
+}
+
+/* --- Main Content --- */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  // Background ambient glow
+  &::before {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(
+      circle,
+      rgba($primary-hover, 0.08) 0%,
+      rgba($bg-base, 0) 70%
+    );
+    border-radius: 50%;
+    top: 20%;
+    left: 20%;
+    z-index: 0;
+    pointer-events: none;
+  }
+}
+
+/* --- Topbar --- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  background-color: rgba(10, 14, 23, 0.8);
+  border-bottom: 1px solid $border-color;
+  backdrop-filter: blur(12px);
+  z-index: 5;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  .logout-btn {
+    background: transparent;
+    color: $error-color;
+    border: 1px solid rgba($error-color, 0.5);
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba($error-color, 0.1);
+      box-shadow: 0 0 10px rgba($error-color, 0.2);
+    }
+  }
+}
+
+/* --- Content Area --- */
+.content-area {
+  padding: 2.5rem;
+  flex: 1;
+  z-index: 1; // Sit above the ambient glow
+  overflow-y: auto;
+}
+
+/* --- Glassmorphism Cards Base --- */
+%glass-card {
+  background-color: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Stats Grid --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+
+  .stat-card {
+    @extend %glass-card;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    // Top accent border
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        $primary-accent,
+        transparent
+      );
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    h4 {
+      color: $text-muted;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: $text-main;
+    }
+
+    &.alert-card {
+      &::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          $error-color,
+          transparent
+        );
+      }
+      .stat-value {
+        color: $error-color;
+      }
+    }
+  }
+}
+
+/* --- Main Panel --- */
+.main-panel {
+  @extend %glass-card;
+  padding: 2rem;
+  min-height: 300px;
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 0.5rem;
+    color: $primary-accent;
+  }
+
+  .activity-placeholder {
+    color: $text-muted;
+    font-size: 0.95rem;
+    position: relative;
+    padding: 2rem 0;
+    text-align: center;
+
+    // A subtle scanner effect for the futuristic vibe
+    .scanning-line {
+      width: 100%;
+      height: 1px;
+      background-color: $primary-accent;
+      box-shadow: 0 0 8px $primary-accent;
+      opacity: 0.5;
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation: scan 3s infinite linear;
+    }
+  }
+}
+
+/* --- Animations --- */
+@keyframes scan {
+  0% {
+    top: 10%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    top: 90%;
+    opacity: 0;
+  }
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid $border-color;
+
+    .sidebar-nav {
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 0;
+
+      li {
+        white-space: nowrap;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+
+        &.active {
+          border-left: none;
+          border-bottom: 3px solid $primary-accent;
+          box-shadow: inset 0 -5px 15px -10px $primary-accent;
+        }
+      }
+    }
+  }
+}

@@ -1,22 +1,21 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Dashboard.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Dashboard.scss";
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log('User logged out');
-    navigate('/');
+    console.log("User logged out");
+    navigate("/");
   };
 
   return (
     <div className="dashboard-layout">
-      
-
+      {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">
-          Admin Panel
+          CORE<span className="accent">PANEL</span>
         </div>
         <ul className="sidebar-nav">
           <li className="active">Overview</li>
@@ -27,47 +26,47 @@ const Dashboard = () => {
         </ul>
       </aside>
 
-    
+      {/* Main Content */}
       <main className="main-content">
-        
- 
+        {/* Topbar */}
         <header className="topbar">
           <h2>Dashboard Overview</h2>
           <button onClick={handleLogout} className="logout-btn">
-            Log Out
+            Terminate Session
           </button>
         </header>
 
-      
+        {/* Content Area */}
         <div className="content-area">
-          
-     
+          {/* Stats Grid */}
           <div className="stats-grid">
             <div className="stat-card">
               <h4>Total Orders</h4>
-              <p>152</p>
+              <p className="stat-value">152</p>
             </div>
             <div className="stat-card">
               <h4>Active Inventory</h4>
-              <p>8,430</p>
+              <p className="stat-value">8,430</p>
             </div>
-            <div className="stat-card">
+            <div className="stat-card alert-card">
               <h4>System Alerts</h4>
-              <p>0</p>
+              <p className="stat-value">0</p>
             </div>
           </div>
 
-         
+          {/* Main Panel */}
           <div className="main-panel">
             <h3>Recent Activity</h3>
-            <p style={{ marginTop: '1rem', color: '#666' }}>
-              Your recent database entries and activity will appear here.
-            </p>
+            <div className="activity-placeholder">
+              <p>
+                Your recent database entries and network activity will appear
+                here.
+              </p>
+              <div className="scanning-line"></div>
+            </div>
           </div>
-          
         </div>
       </main>
-      
     </div>
   );
 };

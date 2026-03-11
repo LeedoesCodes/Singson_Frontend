@@ -1,0 +1,264 @@
+/* --- Variables - Futuristic Dark Theme --- */
+$bg-base: #0a0e17; // Very dark, slightly blueish black
+$bg-card: rgba(22, 28, 43, 0.8); // Translucent dark gray for glass effect
+$primary-accent: #00f2fe; // Electric Cyan
+$primary-hover: #4facfe; // Softer Blue
+$text-main: #e0e6ed; // Off-white/light gray
+$text-muted: #94a3b8; // Dimmed gray
+$error-color: #ff4d4d; // Bright red for contrast
+$border-color: rgba(255, 255, 255, 0.08); // Subtle white border
+
+/* --- Basic Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $bg-base;
+  color: $text-main;
+  overflow-x: hidden;
+}
+
+/* --- Main Container: Split Screen --- */
+.login-container {
+  display: flex;
+  min-height: 100vh;
+  font-family:
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif; // Cleaner modern font
+  width: 100%;
+
+  /* --- Left Side: Welcome/Branding Area --- */
+  .login-sidebar {
+    flex: 1;
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid $border-color;
+
+    // A subtle CSS-only geometric grid pattern
+    &::before {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image:
+        linear-gradient(rgba($primary-accent, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba($primary-accent, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      transform: rotate(15deg);
+      z-index: 1;
+    }
+
+    .visual-content {
+      position: relative;
+      z-index: 2; // Above the grid pattern
+      text-align: center;
+      max-width: 400px;
+
+      h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, #ffffff, $primary-hover);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      p {
+        font-size: 1.1rem;
+        color: $text-muted;
+        line-height: 1.6;
+        font-weight: 300;
+      }
+    }
+  }
+
+  /* --- Right Side: The Form Area --- */
+  .login-form-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $bg-base;
+    padding: 2rem;
+    position: relative;
+
+    // Subtle glow ambient light in background
+    &::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(
+        circle,
+        rgba($primary-hover, 0.15) 0%,
+        rgba($bg-base, 0) 70%
+      );
+      border-radius: 50%;
+      top: 10%;
+      right: 10%;
+      z-index: 0;
+    }
+  }
+
+  /* --- Mobile Responsiveness --- */
+  @media (max-width: 900px) {
+    flex-direction: column;
+
+    .login-sidebar {
+      flex: none;
+      padding: 4rem 2rem;
+      border-right: none;
+      border-bottom: 1px solid $border-color;
+
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+
+    .login-form-wrapper {
+      flex: 1;
+      padding: 3rem 1.5rem;
+    }
+  }
+}
+
+/* --- The Glassmorphism Card --- */
+.login-card {
+  background-color: $bg-card;
+  padding: 3.5rem 3rem;
+  border-radius: 12px;
+  border: 1px solid $border-color;
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  z-index: 1; // Above background glow
+
+  // Glassmorphism effect (needs supportive browser)
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  // Subtle outer glow
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+
+  h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $text-main;
+    letter-spacing: -0.5px;
+  }
+}
+
+/* --- Error Message --- */
+.error-message {
+  color: $error-color;
+  background-color: rgba($error-color, 0.15);
+  border: 1px solid rgba($error-color, 0.3);
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* --- Form Layout --- */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $text-muted;
+      letter-spacing: 0.5px;
+      text-transform: uppercase; // Gives a technical look
+    }
+
+    input {
+      padding: 1rem;
+      background-color: rgba(0, 0, 0, 0.2); // Darker input bg
+      border: 1px solid $border-color;
+      border-radius: 6px;
+      font-size: 1rem;
+      color: $text-main;
+      transition: all 0.2s ease;
+
+      &::placeholder {
+        color: rgba($text-main, 0.3);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $primary-accent;
+        background-color: rgba(0, 0, 0, 0.3);
+        // Subtle cyan glow on focus
+        box-shadow: 0 0 10px rgba($primary-accent, 0.2);
+      }
+    }
+  }
+
+  /* --- Button --- */
+  .login-btn {
+    background: linear-gradient(
+      135deg,
+      $primary-hover 0%,
+      $primary-accent 100%
+    );
+    color: #000; // Dark text on bright button for contrast
+    border: none;
+    padding: 1rem;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition:
+      transform 0.1s ease,
+      box-shadow 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    &:hover {
+      box-shadow: 0 0 15px rgba($primary-accent, 0.5);
+    }
+
+    &:active {
+      transform: scale(0.98); // Click effect
+    }
+  }
+}
+
+/* --- Extra Link styling --- */
+.card-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+
+  a {
+    color: $text-muted;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $primary-accent;
+    }
+  }
+}
