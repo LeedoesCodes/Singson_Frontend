@@ -1,0 +1,161 @@
+.sidebar {
+  width: 250px;
+  background-color: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
+
+  // Light mode specific styles
+  color-scheme: light;
+
+  .sidebar-header {
+    padding: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2563eb; // Modern blue shade
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #2563eb10, #ffffff);
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    padding: 1rem 0;
+    margin: 0;
+    flex: 1;
+
+    li {
+      margin: 4px 0;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      padding: 0.875rem 1.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      color: #4b5563; // Modern gray
+      transition: all 0.2s ease;
+      position: relative;
+      border-left: 4px solid transparent;
+
+      // Optional: Add icons if you have them
+      // &::before {
+      //   content: '';
+      //   width: 20px;
+      //   height: 20px;
+      //   margin-right: 12px;
+      //   background-size: contain;
+      // }
+
+      &:hover {
+        background-color: #f3f4f6;
+        color: #2563eb;
+        border-left-color: #2563eb;
+      }
+
+      &.active {
+        background-color: #eff6ff;
+        color: #2563eb;
+        border-left-color: #2563eb;
+        font-weight: 600;
+
+        &::after {
+          content: "";
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 3px;
+          height: 20px;
+          background-color: #2563eb;
+          border-radius: 3px 0 0 3px;
+        }
+      }
+
+      // Active link with gradient background (alternative style)
+      &.active-gradient {
+        background: linear-gradient(90deg, #eff6ff, transparent);
+      }
+    }
+  }
+
+  // Optional: Footer section for sidebar
+  .sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.875rem;
+    color: #6b7280;
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #6b7280;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #2563eb;
+      }
+    }
+  }
+
+  // Collapsed state styles (if needed)
+  &.collapsed {
+    width: 70px;
+
+    .sidebar-header {
+      font-size: 0;
+      padding: 1.5rem 0;
+
+      &::first-letter {
+        font-size: 1.5rem;
+      }
+    }
+
+    .sidebar-nav a {
+      padding: 1rem;
+      justify-content: center;
+
+      span {
+        display: none;
+      }
+    }
+  }
+}
+
+// Light mode enhancements
+@media (prefers-color-scheme: light) {
+  .sidebar {
+    background-color: #ffffff;
+    border-right-color: #e5e7eb;
+  }
+}
+
+// Optional: Add animation for sidebar items
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebar-nav li {
+  animation: slideIn 0.3s ease forwards;
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+}

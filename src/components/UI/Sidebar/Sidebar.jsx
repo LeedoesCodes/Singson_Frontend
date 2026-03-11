@@ -1,36 +1,62 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import './Sidebar.css';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import "./Sidebar.scss";
 
-const Sidebar = () => {
+const Sidebar = ({ collapsed = false }) => {
+  const userData = localStorage.getItem("user");
+  const user = userData ? JSON.parse(userData) : null;
+  const role = user?.role;
+
+  const navItems = [
+    {
+      path: "/dashboard",
+      label: "Overview",
+      icon: "📊",
+      roles: ["admin", "cashier"],
+    },
+    {
+      path: "/products",
+      label: "Products",
+      icon: "🍔",
+      roles: ["admin", "cashier"],
+    },
+    {
+      path: "/orders",
+      label: "Orders",
+      icon: "📦",
+      roles: ["admin", "cashier"],
+    },
+    { path: "/user", label: "Users", icon: "👥", roles: ["admin"] },
+    { path: "/settings", label: "Settings", icon: "⚙️", roles: ["admin"] },
+  ];
+
+  const filteredNavItems = navItems.filter((item) => item.roles.includes(role));
+
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        Admin Panel
-      </div>
-      
+    <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+      <div className="sidebar-header">{collapsed ? "AP" : "Admin Panel"}</div>
+
       <ul className="sidebar-nav">
-        <li>
-          <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
-            Overview
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/orders" className={({ isActive }) => isActive ? "active" : ""}>
-            Orders
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/user" className={({ isActive }) => isActive ? "active" : ""}>
-            Users
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/settings" className={({ isActive }) => isActive ? "active" : ""}>
-            Settings
-          </NavLink>
-        </li>
+        {filteredNavItems.map((item) => (
+          <li key={item.path}>
+            <NavLink
+              to={item.path}
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              {!collapsed && <span className="nav-label">{item.label}</span>}
+            </NavLink>
+          </li>
+        ))}
       </ul>
+
+      {!collapsed && (
+        <div className="sidebar-footer">
+          <NavLink to="/profile">
+            <span>👤</span> Profile
+          </NavLink>
+        </div>
+      )}
     </aside>
   );
 };

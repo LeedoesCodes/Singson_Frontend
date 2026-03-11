@@ -26,12 +26,21 @@ const Login = () => {
       const result = await loginUser(email, password);
 
       if (result.ok) {
-        localStorage.setItem("token", result.data.token);
-        localStorage.setItem("user", JSON.stringify(result.data.user));
+        const token = result.data.token;
+        const user = result.data.user;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
 
         console.log("Login successful:", result.data);
 
-        navigate("/dashboard");
+        if (user.role === "admin") {
+          navigate("/dashboard");
+        } else if (user.role === "cashier") {
+          navigate("/orders");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         setError(result.data.message || "Invalid credentials. Access denied.");
       }
