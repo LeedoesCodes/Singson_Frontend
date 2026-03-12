@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-// UI Components
+// Layouts
 import Layout from "./components/UI/Layout/Layout";
+import CustomerLayout from "./components/UI/CustomerLayout/CustomerLayout";
 
 // Pages
 import Dashboard from "./components/Pages/Dashboard/Dashboard";
@@ -10,24 +11,42 @@ import Orders from "./components/Pages/Orders/Orders";
 import User from "./components/Pages/User/User";
 import Settings from "./components/Pages/Settings/Settings";
 import Products from "./components/Pages/Products/Products";
+import Menu from "./components/Pages/Menu/Menu";
+import POSInterface from "./components/Pages/POS/POSInterface";
+import Inventory from "./components/Pages/Inventory/Inventory";
+import InventoryLogs from "./components/Pages/Inventory/components/InventoryLogs";
+import LowStockAlerts from "./components/Pages/Inventory/components/LowStockAlerts";
+import TrackOrder from "./components/Pages/TrackOrder/TrackOrder";
+import Reports from "./components/Pages/Reports/Reports";
+import CustomerOrders from "./components/Pages/CustomerOrders/CustomerOrders";
 
 // Auth
 import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RoleProtectedRoute from "./components/auth/RoleProtectedRoute";
-
-import Menu from "./components/Pages/Menu/Menu";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
-        <Route path="/menu" element={<Menu />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/track" element={<TrackOrder />} />
+        <Route path="/track/:orderNumber" element={<TrackOrder />} />
 
+        {/* Customer routes (public menu) */}
+        <Route element={<CustomerLayout />}>
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/my-orders" element={<CustomerOrders />} />
+        </Route>
+
+        {/* Protected routes (require authentication) */}
         <Route element={<ProtectedRoute />}>
+          {/* Admin / Cashier Layout with Sidebar */}
           <Route element={<Layout />}>
-            {/* Shared routes: admin + cashier */}
+            {/* Routes accessible by both admin and cashier */}
             <Route
               element={
                 <RoleProtectedRoute allowedRoles={["admin", "cashier"]} />
@@ -37,15 +56,23 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/products" element={<Products />} />
+              <Route path="/pos" element={<POSInterface />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/inventory/logs" element={<InventoryLogs />} />
+              <Route path="/inventory/low-stock" element={<LowStockAlerts />} />
             </Route>
 
-            {/* Admin-only routes */}
+            {/* Routes accessible only by admin */}
             <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
               <Route path="/user" element={<User />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/reports" element={<Reports />} />
             </Route>
           </Route>
         </Route>
+
+        {/* Fallback: redirect to menu if no match */}
+        <Route path="*" element={<Navigate to="/menu" replace />} />
       </Routes>
     </BrowserRouter>
   );
