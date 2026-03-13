@@ -9,7 +9,6 @@ import {
   DocumentTextIcon,
   ExclamationTriangleIcon,
   UserGroupIcon,
-  Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
   UserIcon,
   Bars3Icon,
@@ -48,7 +47,7 @@ const Sidebar = ({ collapsed = false, onToggle }) => {
     setExpandedMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
   };
 
-  // Main navigation items (excluding children)
+  // Main navigation items (Settings removed)
   const navItems = [
     {
       path: "/dashboard",
@@ -105,12 +104,7 @@ const Sidebar = ({ collapsed = false, onToggle }) => {
       icon: UserGroupIcon,
       roles: ["admin"],
     },
-    {
-      path: "/settings",
-      label: "Settings",
-      icon: Cog6ToothIcon,
-      roles: ["admin"],
-    },
+    // Settings item removed
   ];
 
   const filteredNavItems = navItems.filter((item) => item.roles.includes(role));

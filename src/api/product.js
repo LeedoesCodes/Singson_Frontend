@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -49,7 +49,7 @@ export async function createProduct(formData) {
 
 export async function updateProduct(id, formData) {
   const response = await fetch(`${API_URL}/products/${id}`, {
-    method: "POST", // Use POST with _method trick if PUT doesn't work, but Laravel should handle PUT
+    method: "PUT", // Changed from POST to PUT
     headers: {
       Accept: "application/json",
       ...getAuthHeaderOnly(),

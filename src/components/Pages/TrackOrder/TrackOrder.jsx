@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { trackOrder } from "../../../api/order";
 import {
   DocumentTextIcon,
@@ -9,26 +10,29 @@ import {
 } from "@heroicons/react/24/outline";
 
 const TrackOrder = () => {
-  const [orderNumber, setOrderNumber] = useState("");
+  const { orderNumber } = useParams();
+  const [orderNumberInput, setOrderNumberInput] = useState(orderNumber || "");
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!orderNumber.trim()) {
-      setError("Please enter an order number");
-      return;
+  // Auto-track if order number is provided in URL
+  useEffect(() => {
+    if (orderNumber) {
+      setOrderNumberInput(orderNumber);
+      handleTrackOrder(orderNumber);
     }
+  }, [orderNumber]);
 
+  const handleTrackOrder = async (number) => {
     setLoading(true);
     setError("");
     setOrder(null);
     setSearched(true);
 
     try {
-      const result = await trackOrder(orderNumber);
+      const result = await trackOrder(number);
       if (result.ok) {
         setOrder(result.data.order);
       } else {
@@ -39,6 +43,15 @@ const TrackOrder = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!orderNumberInput.trim()) {
+      setError("Please enter an order number");
+      return;
+    }
+    handleTrackOrder(orderNumberInput);
   };
 
   const getStatusStep = (status) => {
@@ -79,15 +92,17 @@ const TrackOrder = () => {
           <form onSubmit={handleSubmit} className="flex gap-3">
             <input
               type="text"
-              value={orderNumber}
-              onChange={(e) => setOrderNumber(e.target.value.toUpperCase())}
+              value={orderNumberInput}
+              onChange={(e) =>
+                setOrderNumberInput(e.target.value.toUpperCase())
+              }
               placeholder="e.g., ORD-000001"
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {loading ? "Searching..." : "Track"}
             </button>

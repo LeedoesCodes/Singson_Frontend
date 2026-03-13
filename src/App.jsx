@@ -6,10 +6,11 @@ import Layout from "./components/UI/Layout/Layout";
 import CustomerLayout from "./components/UI/CustomerLayout/CustomerLayout";
 
 // Pages
+import Landing from "./components/Pages/Landing/Landing";
 import Dashboard from "./components/Pages/Dashboard/Dashboard";
 import Orders from "./components/Pages/Orders/Orders";
 import User from "./components/Pages/User/User";
-import Settings from "./components/Pages/Settings/Settings";
+// Remove Settings import
 import Products from "./components/Pages/Products/Products";
 import Menu from "./components/Pages/Menu/Menu";
 import POSInterface from "./components/Pages/POS/POSInterface";
@@ -31,15 +32,18 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/track" element={<TrackOrder />} />
         <Route path="/track/:orderNumber" element={<TrackOrder />} />
 
-        {/* Customer routes (public menu) */}
+        {/* Customer routes (public menu and protected customer pages) */}
         <Route element={<CustomerLayout />}>
           <Route path="/menu" element={<Menu />} />
-          <Route path="/my-orders" element={<CustomerOrders />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/my-orders" element={<CustomerOrders />} />
+          </Route>
         </Route>
 
         {/* Protected routes (require authentication) */}
@@ -52,7 +56,6 @@ function App() {
                 <RoleProtectedRoute allowedRoles={["admin", "cashier"]} />
               }
             >
-              <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/products" element={<Products />} />
@@ -65,14 +68,14 @@ function App() {
             {/* Routes accessible only by admin */}
             <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
               <Route path="/user" element={<User />} />
-              <Route path="/settings" element={<Settings />} />
+              {/* Remove Settings route */}
               <Route path="/reports" element={<Reports />} />
             </Route>
           </Route>
         </Route>
 
-        {/* Fallback: redirect to menu if no match */}
-        <Route path="*" element={<Navigate to="/menu" replace />} />
+        {/* Fallback: redirect to home if no match */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

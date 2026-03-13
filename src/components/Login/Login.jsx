@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/auth";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -52,7 +53,16 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen w-full">
+    <div className="flex flex-col md:flex-row min-h-screen w-full relative">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate("/")}
+        className="absolute top-4 left-4 z-10 flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg shadow-md hover:bg-gray-50 transition-colors"
+      >
+        <ArrowLeftIcon className="w-5 h-5" />
+        <span>Back to Home</span>
+      </button>
+
       <div className="w-full md:w-1/2 bg-gradient-to-br from-orange-500 to-orange-600 flex justify-center items-center p-8 md:p-12">
         <div className="text-center max-w-md text-white">
           <div className="text-7xl mb-4">🥘</div>

@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { getOrders } from "../../../api/order";
+import { submitReview, getMyReviews } from "../../../api/review";
+import ReviewModal from "../Reviews/ReviewModal";
+import { StarIcon } from "@heroicons/react/24/outline";
+import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
+import { Link, useNavigate } from "react-router-dom"; // Add useNavigate
 
 const CustomerOrders = () => {
+  const navigate = useNavigate(); // Add this
   const [orders, setOrders] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     fetchOrders();
+    fetchMyReviews();
   }, []);
 
   const fetchOrders = async () => {
@@ -24,6 +34,33 @@ const CustomerOrders = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchMyReviews = async () => {
+    try {
+      const data = await getMyReviews();
+      setReviews(data.reviews || []);
+    } catch (err) {
+      console.error("Failed to fetch reviews:", err);
+    }
+  };
+
+  const handleSubmitReview = async (reviewData) => {
+    const result = await submitReview(reviewData);
+    if (result.ok) {
+      alert("Thank you for your review!");
+      fetchMyReviews();
+    } else {
+      alert(result.data.message || "Failed to submit review");
+    }
+  };
+
+  const handleTrackOrder = (orderNumber) => {
+    navigate(`/track/${orderNumber}`);
+  };
+
+  const hasReviewedOrder = (orderId) => {
+    return reviews.some((review) => review.order_id === orderId);
   };
 
   const getStatusColor = (status) => {
@@ -66,90 +103,144 @@ const CustomerOrders = () => {
           <p className="text-gray-500 text-lg">
             You haven't placed any orders yet.
           </p>
-          <a
-            href="/menu"
+          <Link
+            to="/menu"
             className="mt-4 inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
           >
             Browse Menu
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((order) => (
-            <div
-              key={order.id}
-              className="bg-white rounded-lg shadow overflow-hidden"
-            >
-              {/* Order Header */}
-              <div className="bg-gray-50 px-6 py-4 border-b flex flex-wrap justify-between items-center">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    Order #{order.order_number}
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    {formatDate(order.created_at)}
-                  </p>
-                </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}
-                >
-                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                </span>
-              </div>
+          {orders.map((order) => {
+            const reviewed = hasReviewedOrder(order.id);
 
-              {/* Order Items */}
-              <div className="px-6 py-4">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="py-2 text-left">Item</th>
-                      <th className="py-2 text-center">Qty</th>
-                      <th className="py-2 text-right">Price</th>
-                      <th className="py-2 text-right">Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {order.items?.map((item) => (
-                      <tr key={item.id} className="border-b last:border-0">
-                        <td className="py-3">
-                          {item.product?.product_name || "Product"}
+            return (
+              <div
+                key={order.id}
+                className="bg-white rounded-lg shadow overflow-hidden"
+              >
+                {/* Order Header */}
+                <div className="bg-gray-50 px-6 py-4 border-b flex flex-wrap justify-between items-center">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-800">
+                      Order #{order.order_number}
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      {formatDate(order.created_at)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {order.status === "completed" && !reviewed && (
+                      <button
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setShowReviewModal(true);
+                        }}
+                        className="flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-sm font-medium hover:bg-orange-200 transition-colors"
+                      >
+                        <StarIcon className="w-4 h-4" />
+                        Write Review
+                      </button>
+                    )}
+                    {reviewed && (
+                      <span className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm font-medium">
+                        <StarIconSolid className="w-4 h-4" />
+                        Reviewed
+                      </span>
+                    )}
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}
+                    >
+                      {order.status.charAt(0).toUpperCase() +
+                        order.status.slice(1)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Order Items */}
+                <div className="px-6 py-4">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="py-2 text-left">Item</th>
+                        <th className="py-2 text-center">Qty</th>
+                        <th className="py-2 text-right">Price</th>
+                        <th className="py-2 text-right">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {order.items?.map((item) => (
+                        <tr key={item.id} className="border-b last:border-0">
+                          <td className="py-3">
+                            {item.product?.product_name || "Product"}
+                          </td>
+                          <td className="py-3 text-center">{item.quantity}</td>
+                          <td className="py-3 text-right">
+                            ₱{Number(item.price).toFixed(2)}
+                          </td>
+                          <td className="py-3 text-right font-medium">
+                            ₱{(item.quantity * item.price).toFixed(2)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="3" className="pt-3 text-right font-bold">
+                          Total:
                         </td>
-                        <td className="py-3 text-center">{item.quantity}</td>
-                        <td className="py-3 text-right">
-                          ₱{Number(item.price).toFixed(2)}
-                        </td>
-                        <td className="py-3 text-right font-medium">
-                          ₱{(item.quantity * item.price).toFixed(2)}
+                        <td className="pt-3 text-right font-bold text-orange-600">
+                          ₱{Number(order.total_amount).toFixed(2)}
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan="3" className="pt-3 text-right font-bold">
-                        Total:
-                      </td>
-                      <td className="pt-3 text-right font-bold text-orange-600">
-                        ₱{Number(order.total_amount).toFixed(2)}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
+                    </tfoot>
+                  </table>
+                </div>
 
-              {/* Optional: Track button */}
-              <div className="px-6 py-3 bg-gray-50 border-t text-right">
-                <a
-                  href={`/track/${order.order_number}`}
-                  className="text-orange-600 hover:text-orange-800 text-sm font-medium"
-                >
-                  Track Order →
-                </a>
+                {/* Order Footer with Actions */}
+                <div className="px-6 py-3 bg-gray-50 border-t flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    {order.items?.length} item(s)
+                  </div>
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => handleTrackOrder(order.order_number)}
+                      className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center gap-1"
+                    >
+                      Track Order
+                      <span className="text-lg">→</span>
+                    </button>
+                    {order.status === "completed" && !reviewed && (
+                      <button
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setShowReviewModal(true);
+                        }}
+                        className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center gap-1"
+                      >
+                        <StarIcon className="w-4 h-4" />
+                        Write Review
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
+
+      {/* Review Modal */}
+      <ReviewModal
+        isOpen={showReviewModal}
+        onClose={() => {
+          setShowReviewModal(false);
+          setSelectedOrder(null);
+        }}
+        onSubmit={handleSubmitReview}
+        order={selectedOrder}
+      />
     </div>
   );
 };

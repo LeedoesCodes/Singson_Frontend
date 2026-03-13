@@ -130,6 +130,15 @@ const POSInterface = () => {
     }
   };
 
+  const getImageUrl = (product) => {
+    if (product.image_url) {
+      return product.image_url;
+    } else if (product.image) {
+      return `http://127.0.0.1:8000/storage/${product.image}`;
+    }
+    return null;
+  };
+
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedCategory === "all" || product.category?.id === selectedCategory;
@@ -207,52 +216,65 @@ const POSInterface = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {filteredProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      onClick={() => addToCart(product)}
-                      className={`bg-white rounded-xl shadow-sm p-3 cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
-                        !product.is_available || product.current_stock === 0
-                          ? "opacity-50 cursor-not-allowed hover:translate-y-0 hover:shadow-sm"
-                          : ""
-                      }`}
-                    >
-                      {/* Product Image Placeholder - replaced with Heroicons */}
-                      <div className="h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg mb-2 flex items-center justify-center">
-                        {product.image ? (
-                          <PhotoIcon className="w-8 h-8 text-gray-400" />
-                        ) : (
-                          <CubeIcon className="w-8 h-8 text-gray-400" />
-                        )}
-                      </div>
+                  {filteredProducts.map((product) => {
+                    const imageUrl = getImageUrl(product);
+                    return (
+                      <div
+                        key={product.id}
+                        onClick={() => addToCart(product)}
+                        className={`bg-white rounded-xl shadow-sm p-3 cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+                          !product.is_available || product.current_stock === 0
+                            ? "opacity-50 cursor-not-allowed hover:translate-y-0 hover:shadow-sm"
+                            : ""
+                        }`}
+                      >
+                        {/* Product Image - Now shows actual images */}
+                        <div className="h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={product.product_name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.style.display = "none";
+                                e.target.parentElement.innerHTML =
+                                  '<svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>';
+                              }}
+                            />
+                          ) : (
+                            <CubeIcon className="w-8 h-8 text-gray-400" />
+                          )}
+                        </div>
 
-                      {/* Product Info */}
-                      <h3 className="font-medium text-sm text-gray-800 line-clamp-1">
-                        {product.product_name}
-                      </h3>
-                      <p className="text-xs text-gray-500 mb-2 line-clamp-1">
-                        {product.category?.name || "Uncategorized"}
-                      </p>
+                        {/* Product Info */}
+                        <h3 className="font-medium text-sm text-gray-800 line-clamp-1">
+                          {product.product_name}
+                        </h3>
+                        <p className="text-xs text-gray-500 mb-2 line-clamp-1">
+                          {product.category?.name || "Uncategorized"}
+                        </p>
 
-                      {/* Price and Stock */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-orange-600">
-                          ₱{Number(product.price).toFixed(0)}
-                        </span>
-                        <span
-                          className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                            product.current_stock > 10
-                              ? "bg-green-100 text-green-700"
-                              : product.current_stock > 0
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {product.current_stock}
-                        </span>
+                        {/* Price and Stock */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-orange-600">
+                            ₱{Number(product.price).toFixed(0)}
+                          </span>
+                          <span
+                            className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                              product.current_stock > 10
+                                ? "bg-green-100 text-green-700"
+                                : product.current_stock > 0
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {product.current_stock}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -280,7 +302,6 @@ const POSInterface = () => {
               <div className="flex-1 overflow-auto p-4 space-y-3">
                 {cart.length === 0 ? (
                   <div className="text-center py-8">
-                    {/* Shopping cart icon replaced with Heroicon */}
                     <ShoppingCartIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-400 text-sm">Cart is empty</p>
                     <p className="text-xs text-gray-300 mt-1">

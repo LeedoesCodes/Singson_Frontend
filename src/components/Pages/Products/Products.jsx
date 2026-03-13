@@ -6,6 +6,23 @@ import {
   deleteProduct,
 } from "../../../api/product";
 import ProductModal from "./ProductModal";
+import {
+  PlusIcon,
+  CubeIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ExclamationTriangleIcon,
+  PencilIcon,
+  TrashIcon,
+  PhotoIcon,
+  CurrencyDollarIcon,
+  TagIcon,
+  DocumentTextIcon,
+  ArchiveBoxIcon,
+  ShoppingBagIcon,
+  FunnelIcon,
+} from "@heroicons/react/24/outline";
+import { CheckCircleIcon as CheckCircleSolid } from "@heroicons/react/24/solid";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -89,7 +106,7 @@ const Products = () => {
 
   const getStockBadgeClasses = (stockClass) => {
     const baseClasses =
-      "px-3 py-1.5 rounded-full text-white text-xs font-bold inline-block whitespace-nowrap";
+      "px-3 py-1.5 rounded-full text-white text-xs font-bold inline-block whitespace-nowrap flex items-center gap-1";
     const colorClasses = {
       high: "bg-green-500",
       low: "bg-amber-500",
@@ -100,14 +117,14 @@ const Products = () => {
 
   const getAvailabilityBadgeClasses = (isAvailable) => {
     const baseClasses =
-      "px-3 py-1.5 rounded-full text-white text-xs font-bold inline-block whitespace-nowrap";
+      "px-3 py-1.5 rounded-full text-white text-xs font-bold inline-block whitespace-nowrap flex items-center gap-1";
     return isAvailable
       ? `${baseClasses} bg-green-600`
       : `${baseClasses} bg-gray-500`;
   };
 
   const getStockNoteClasses = (stockClass) => {
-    const baseClasses = "text-sm mt-2";
+    const baseClasses = "text-sm mt-2 flex items-center gap-1";
     const colorClasses = {
       high: "text-green-600",
       low: "text-amber-600",
@@ -194,7 +211,8 @@ const Products = () => {
       {/* Header */}
       <div className="mb-8 flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold mb-2 text-gray-800">
+          <h2 className="text-3xl font-bold mb-2 text-gray-800 flex items-center gap-2">
+            <CubeIcon className="w-8 h-8 text-orange-500" />
             Products Management
           </h2>
           <p className="text-base text-gray-500">
@@ -207,36 +225,40 @@ const Products = () => {
             onClick={handleAddProduct}
             className="px-5 py-2.5 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition-all shadow-sm flex items-center gap-2"
           >
-            <span>+</span> Add Product
+            <PlusIcon className="w-4 h-4" />
+            Add Product
           </button>
           <button
             onClick={() => setFilter("all")}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 ${
               filter === "all"
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
             }`}
           >
+            <ArchiveBoxIcon className="w-4 h-4" />
             All Products
           </button>
           <button
             onClick={() => setFilter("available")}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 ${
               filter === "available"
                 ? "bg-green-600 text-white hover:bg-green-700"
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
             }`}
           >
+            <CheckCircleIcon className="w-4 h-4" />
             Available
           </button>
           <button
             onClick={() => setFilter("unavailable")}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 ${
               filter === "unavailable"
                 ? "bg-gray-600 text-white hover:bg-gray-700"
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
             }`}
           >
+            <XCircleIcon className="w-4 h-4" />
             Unavailable
           </button>
         </div>
@@ -259,50 +281,66 @@ const Products = () => {
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className={getSummaryCardClasses("default")}>
-              <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
-                Total Products
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
+                  Total Products
+                </span>
+                <ArchiveBoxIcon className="w-5 h-5 text-gray-400" />
+              </div>
               <span className="text-4xl font-bold text-gray-800">
                 {totalProducts}
               </span>
-              <span className="text-xs text-gray-400 mt-1">
+              <span className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                <CubeIcon className="w-3 h-3" />
                 All products in inventory
               </span>
             </div>
 
             <div className={getSummaryCardClasses("success")}>
-              <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
-                In Stock
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
+                  In Stock
+                </span>
+                <CheckCircleSolid className="w-5 h-5 text-green-500" />
+              </div>
               <span className="text-4xl font-bold text-gray-800">
                 {inStockCount}
               </span>
-              <span className="text-xs text-green-600 mt-1">
-                ✓ Healthy stock levels
+              <span className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                <CheckCircleIcon className="w-3 h-3" />
+                Healthy stock levels
               </span>
             </div>
 
             <div className={getSummaryCardClasses("warning")}>
-              <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
-                Low Stock
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
+                  Low Stock
+                </span>
+                <ExclamationTriangleIcon className="w-5 h-5 text-amber-500" />
+              </div>
               <span className="text-4xl font-bold text-gray-800">
                 {lowStockCount}
               </span>
-              <span className="text-xs text-amber-600 mt-1">
-                ⚠ Need reordering soon
+              <span className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                <ExclamationTriangleIcon className="w-3 h-3" />
+                Need reordering soon
               </span>
             </div>
 
             <div className={getSummaryCardClasses("danger")}>
-              <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
-                Out of Stock
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">
+                  Out of Stock
+                </span>
+                <XCircleIcon className="w-5 h-5 text-red-500" />
+              </div>
               <span className="text-4xl font-bold text-gray-800">
                 {outOfStockCount}
               </span>
-              <span className="text-xs text-red-600 mt-1">
-                ✗ Requires immediate attention
+              <span className="text-xs text-red-600 mt-1 flex items-center gap-1">
+                <XCircleIcon className="w-3 h-3" />
+                Requires immediate attention
               </span>
             </div>
           </div>
@@ -357,7 +395,8 @@ const Products = () => {
                       className="hover:bg-blue-50/50 transition-colors border-b border-gray-100 last:border-b-0"
                     >
                       <td className="p-5 text-sm font-semibold text-gray-600 align-top">
-                        <span className="bg-gray-100 px-2 py-1 rounded">
+                        <span className="bg-gray-100 px-2 py-1 rounded flex items-center gap-1 w-fit">
+                          <TagIcon className="w-3 h-3" />
                           {product.product_code}
                         </span>
                       </td>
@@ -365,33 +404,58 @@ const Products = () => {
                         {product.product_name}
                       </td>
                       <td className="p-5 text-sm align-top">
-                        <span className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full text-xs font-medium whitespace-nowrap">
+                        <span className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full text-xs font-medium whitespace-nowrap flex items-center gap-1 w-fit">
+                          <CubeIcon className="w-3 h-3" />
                           {product.category?.name || "Uncategorized"}
                         </span>
                       </td>
                       <td className="p-5 text-sm text-gray-600 align-top max-w-md">
-                        <p className="line-clamp-2 leading-relaxed">
-                          {product.description || "No description available"}
+                        <p className="line-clamp-2 leading-relaxed flex items-start gap-1">
+                          <DocumentTextIcon className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                          <span>
+                            {product.description || "No description available"}
+                          </span>
                         </p>
                       </td>
                       <td className="p-5 text-sm font-bold text-blue-600 align-top whitespace-nowrap">
-                        ₱
-                        {Number(product.price).toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                        <span className="flex items-center gap-1">
+                          <CurrencyDollarIcon className="w-4 h-4" />
+                          {Number(product.price).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
                       </td>
                       <td className="p-5 text-sm align-top min-w-[200px]">
                         <div className="flex flex-col gap-2">
                           <div className="flex items-center gap-3">
-                            <span className="font-medium text-gray-700">
+                            <span className="font-medium text-gray-700 flex items-center gap-1">
+                              <ShoppingBagIcon className="w-4 h-4" />
                               {product.current_stock} units
                             </span>
                             <span className={getStockBadgeClasses(stockClass)}>
+                              {stockClass === "high" && (
+                                <CheckCircleIcon className="w-3 h-3" />
+                              )}
+                              {stockClass === "low" && (
+                                <ExclamationTriangleIcon className="w-3 h-3" />
+                              )}
+                              {stockClass === "out" && (
+                                <XCircleIcon className="w-3 h-3" />
+                              )}
                               {getStockLabel(product.current_stock)}
                             </span>
                           </div>
                           <p className={getStockNoteClasses(stockClass)}>
+                            {stockClass === "high" && (
+                              <CheckCircleIcon className="w-4 h-4" />
+                            )}
+                            {stockClass === "low" && (
+                              <ExclamationTriangleIcon className="w-4 h-4" />
+                            )}
+                            {stockClass === "out" && (
+                              <XCircleIcon className="w-4 h-4" />
+                            )}
                             {getStockNote(product.current_stock)}
                           </p>
                         </div>
@@ -402,6 +466,11 @@ const Products = () => {
                             product.is_available,
                           )}
                         >
+                          {product.is_available ? (
+                            <CheckCircleIcon className="w-3 h-3" />
+                          ) : (
+                            <XCircleIcon className="w-3 h-3" />
+                          )}
                           {product.is_available ? "Available" : "Unavailable"}
                         </span>
                       </td>
@@ -418,11 +487,12 @@ const Products = () => {
                               e.target.onerror = null;
                               e.target.style.display = "none";
                               e.target.parentElement.innerHTML =
-                                '<span class="text-gray-400 text-xs">Broken</span>';
+                                '<span class="text-gray-400 text-xs flex items-center gap-1"><PhotoIcon class="w-3 h-3" />Broken</span>';
                             }}
                           />
                         ) : (
-                          <span className="text-gray-400 text-xs">
+                          <span className="text-gray-400 text-xs flex items-center gap-1">
+                            <PhotoIcon className="w-3 h-3" />
                             No image
                           </span>
                         )}
@@ -431,16 +501,18 @@ const Products = () => {
                         <div className="flex gap-3">
                           <button
                             onClick={() => handleEditProduct(product)}
-                            className="text-blue-600 hover:text-blue-800 font-medium"
+                            className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
                             disabled={actionLoading}
                           >
+                            <PencilIcon className="w-4 h-4" />
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product.id)}
-                            className="text-red-600 hover:text-red-800 font-medium"
+                            className="text-red-600 hover:text-red-800 font-medium flex items-center gap-1"
                             disabled={actionLoading}
                           >
+                            <TrashIcon className="w-4 h-4" />
                             Delete
                           </button>
                         </div>
@@ -456,7 +528,7 @@ const Products = () => {
 
       {!loading && !error && filteredProducts.length === 0 && (
         <div className="text-center py-16 bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="mb-4 text-6xl">📦</div>
+          <CubeIcon className="w-20 h-20 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-600 text-xl mb-3">No products found.</p>
           <p className="text-gray-400 text-sm mb-6">
             {filter !== "all"
@@ -466,16 +538,18 @@ const Products = () => {
           {filter !== "all" && (
             <button
               onClick={() => setFilter("all")}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium flex items-center gap-2 mx-auto"
             >
+              <ArchiveBoxIcon className="w-4 h-4" />
               Show all products
             </button>
           )}
           {filter === "all" && (
             <button
               onClick={handleAddProduct}
-              className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-sm font-medium"
+              className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-sm font-medium flex items-center gap-2 mx-auto"
             >
+              <PlusIcon className="w-4 h-4" />
               Add Your First Product
             </button>
           )}
