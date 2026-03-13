@@ -139,7 +139,7 @@ const Dashboard = () => {
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-lg p-6 text-white">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">
-          Welcome back, Admin! 👋
+          Welcome back! 👋
         </h1>
         <p className="text-orange-100">
           Here's what's happening with your canteen today.
