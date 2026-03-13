@@ -191,7 +191,7 @@ const Products = () => {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen text-gray-800 font-sans">
-      {/* Header with improved spacing and Add button */}
+      {/* Header */}
       <div className="mb-8 flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold mb-2 text-gray-800">
@@ -307,7 +307,7 @@ const Products = () => {
             </div>
           </div>
 
-          {/* Products Table with Actions column */}
+          {/* Products Table */}
           <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
             <table className="w-full border-collapse bg-white text-left">
               <thead>
@@ -334,6 +334,9 @@ const Products = () => {
                     Availability
                   </th>
                   <th className="p-5 font-bold text-xs text-gray-600 border-b border-gray-200 uppercase tracking-wider whitespace-nowrap">
+                    Image
+                  </th>
+                  <th className="p-5 font-bold text-xs text-gray-600 border-b border-gray-200 uppercase tracking-wider whitespace-nowrap">
                     Actions
                   </th>
                 </tr>
@@ -341,6 +344,13 @@ const Products = () => {
               <tbody>
                 {filteredProducts.map((product) => {
                   const stockClass = getStockClass(product.current_stock);
+                  // Debug log
+                  console.log(
+                    "Rendering product:",
+                    product.id,
+                    product.image,
+                    product.image_url,
+                  );
                   return (
                     <tr
                       key={product.id}
@@ -394,6 +404,28 @@ const Products = () => {
                         >
                           {product.is_available ? "Available" : "Unavailable"}
                         </span>
+                      </td>
+                      <td className="p-5 text-sm align-top">
+                        {product.image ? (
+                          <img
+                            src={
+                              product.image_url ||
+                              `http://127.0.0.1:8000/storage/${product.image}`
+                            }
+                            alt={product.product_name}
+                            className="h-10 w-10 object-cover rounded"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.style.display = "none";
+                              e.target.parentElement.innerHTML =
+                                '<span class="text-gray-400 text-xs">Broken</span>';
+                            }}
+                          />
+                        ) : (
+                          <span className="text-gray-400 text-xs">
+                            No image
+                          </span>
+                        )}
                       </td>
                       <td className="p-5 text-sm align-top">
                         <div className="flex gap-3">

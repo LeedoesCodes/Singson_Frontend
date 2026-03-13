@@ -10,7 +10,10 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
     current_stock: "",
     is_available: true,
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -23,8 +26,15 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
         current_stock: product.current_stock || "",
         is_available: product.is_available ?? true,
       });
+      // Set image preview
+      if (product.image_url) {
+        setImagePreview(product.image_url);
+      } else if (product.image) {
+        setImagePreview(`http://127.0.0.1:8000/storage/${product.image}`);
+      } else {
+        setImagePreview(null);
+      }
     } else {
-      // Reset for new product
       setFormData({
         product_code: "",
         product_name: "",
@@ -34,6 +44,8 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
         current_stock: "",
         is_available: true,
       });
+      setImageFile(null);
+      setImagePreview(null);
     }
     setErrors({});
   }, [product, isOpen]);
@@ -46,9 +58,57 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImageFile(null);
+      setImagePreview(null);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    setLoading(true);
+
+    // Basic validation
+    const newErrors = {};
+    if (!formData.product_code.trim())
+      newErrors.product_code = "Product code is required";
+    if (!formData.product_name.trim())
+      newErrors.product_name = "Product name is required";
+    if (!formData.price) newErrors.price = "Price is required";
+    if (!formData.current_stock && formData.current_stock !== 0)
+      newErrors.current_stock = "Stock is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return;
+    }
+
+    // Build FormData
+    const submitData = new FormData();
+    submitData.append("product_code", formData.product_code);
+    submitData.append("product_name", formData.product_name);
+    submitData.append("description", formData.description || "");
+    submitData.append("price", formData.price);
+    submitData.append("category_id", formData.category_id || "");
+    submitData.append("current_stock", formData.current_stock);
+    submitData.append("is_available", formData.is_available ? "1" : "0");
+
+    if (imageFile) {
+      submitData.append("image", imageFile);
+    }
+
+    await onSubmit(submitData);
+    setLoading(false);
   };
 
   if (!isOpen) return null;
@@ -73,9 +133,13 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
                 name="product_code"
                 value={formData.product_code}
                 onChange={handleChange}
-                required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
+              {errors.product_code && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.product_code}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -86,9 +150,13 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
                 name="product_name"
                 value={formData.product_name}
                 onChange={handleChange}
-                required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
+              {errors.product_name && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.product_name}
+                </p>
+              )}
             </div>
           </div>
 
@@ -116,10 +184,12 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                required
                 min="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
+              {errors.price && (
+                <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -130,10 +200,14 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
                 name="current_stock"
                 value={formData.current_stock}
                 onChange={handleChange}
-                required
                 min="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
+              {errors.current_stock && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.current_stock}
+                </p>
+              )}
             </div>
           </div>
 
@@ -154,6 +228,28 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Product Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+            {imagePreview && (
+              <div className="mt-2">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="h-20 w-20 object-cover rounded"
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex items-center">
@@ -179,9 +275,14 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product, categories }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+              disabled={loading}
+              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50"
             >
-              {product ? "Update Product" : "Create Product"}
+              {loading
+                ? "Saving..."
+                : product
+                  ? "Update Product"
+                  : "Create Product"}
             </button>
           </div>
         </form>

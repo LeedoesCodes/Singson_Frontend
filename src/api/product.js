@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -7,6 +7,11 @@ const getAuthHeaders = () => {
     Accept: "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
   };
+};
+
+const getAuthHeaderOnly = () => {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
 export async function getProducts() {
@@ -29,21 +34,27 @@ export async function getProduct(id) {
   return data;
 }
 
-export async function createProduct(productData) {
+export async function createProduct(formData) {
   const response = await fetch(`${API_URL}/products`, {
     method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(productData),
+    headers: {
+      Accept: "application/json",
+      ...getAuthHeaderOnly(),
+    },
+    body: formData,
   });
   const data = await response.json();
   return { ok: response.ok, status: response.status, data };
 }
 
-export async function updateProduct(id, productData) {
+export async function updateProduct(id, formData) {
   const response = await fetch(`${API_URL}/products/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(productData),
+    method: "POST", // Use POST with _method trick if PUT doesn't work, but Laravel should handle PUT
+    headers: {
+      Accept: "application/json",
+      ...getAuthHeaderOnly(),
+    },
+    body: formData,
   });
   const data = await response.json();
   return { ok: response.ok, status: response.status, data };
